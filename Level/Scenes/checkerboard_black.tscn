@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dovybgcyx82sw"]
+
+[ext_resource type="Script" uid="uid://b4lkn0x44peuc" path="res://Level/Scripts/checkerboard_tile.gd" id="1_4j2i2"]
+[ext_resource type="Texture2D" uid="uid://c45l6e1bh6lto" path="res://Level/Textures/checkerboard_small.png" id="1_jcpw5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vu1vq"]
+size = Vector2(41, 38.305206)
+
+[node name="CheckerboardBlack" type="Area2D" unique_id=419921745]
+script = ExtResource("1_4j2i2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1205965087]
+position = Vector2(0.9862671, 9.152603)
+shape = SubResource("RectangleShape2D_vu1vq")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1998537960]
+position = Vector2(0.9862757, 10.805204)
+scale = Vector2(0.7343747, 0.73437494)
+texture = ExtResource("1_jcpw5")
+region_enabled = true
+region_rect = Rect2(0, 0, 64.03735, 64.932625)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

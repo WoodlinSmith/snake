@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://cb2ulnaj8c7hg"]
+
+[ext_resource type="PackedScene" uid="uid://dovybgcyx82sw" path="res://Level/Scenes/checkerboard_black.tscn" id="2_75rm2"]
+[ext_resource type="Script" uid="uid://dgfo87pnb7uyy" path="res://player.gd" id="3_jamhv"]
+[ext_resource type="PackedScene" uid="uid://o65s21ipsuqi" path="res://Level/Scenes/checkerboard_white.tscn" id="3_m0jcu"]
+[ext_resource type="Texture2D" uid="uid://dny18f775j4ap" path="res://Player/Textures/snake_head.png" id="4_yqaf0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pw3qm"]
+size = Vector2(38, 35)
+
+[node name="BaseScene" type="Node2D" unique_id=359248523]
+
+[node name="Camera" type="Camera2D" parent="." unique_id=982809810]
+position = Vector2(586.65625, 321.79172)
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=1083967441]
+position = Vector2(410.24982, 280.51526)
+script = ExtResource("3_jamhv")
+
+[node name="SnakeHead" type="Sprite2D" parent="Player" unique_id=877026370]
+visibility_layer = 783
+z_index = 1
+position = Vector2(0.2763672, 0.20315552)
+scale = Vector2(0.2777778, 0.21337579)
+texture = ExtResource("4_yqaf0")
+region_rect = Rect2(0, 0, 126, 157)
+
+[node name="SnakeHeadCollision" type="CollisionShape2D" parent="Player" unique_id=96843006]
+position = Vector2(0.30273438, -0.76068115)
+shape = SubResource("RectangleShape2D_pw3qm")
+
+[node name="CheckerboardBlack" parent="." unique_id=419921745 instance=ExtResource("3_m0jcu")]
+position = Vector2(364, 178)
+
+[node name="CheckerboardBlack2" parent="." unique_id=404827836 instance=ExtResource("2_75rm2")]
+position = Vector2(411, 178)
+
+[node name="CheckerboardBlack3" parent="." unique_id=694613374 instance=ExtResource("3_m0jcu")]
+position = Vector2(457, 177)
+
+[node name="CheckerboardBlack4" parent="." unique_id=371338516 instance=ExtResource("2_75rm2")]
+position = Vector2(503, 177)
+
+[node name="CheckerboardBlack5" parent="." unique_id=2056552172 instance=ExtResource("3_m0jcu")]
+position = Vector2(411, 225)
+
+[node name="CheckerboardBlack6" parent="." unique_id=1320782963 instance=ExtResource("2_75rm2")]
+position = Vector2(457, 225)
+
+[node name="CheckerboardBlack7" parent="." unique_id=1850784836 instance=ExtResource("3_m0jcu")]
+position = Vector2(503, 225)
+
+[node name="CheckerboardBlack8" parent="." unique_id=1218187924 instance=ExtResource("2_75rm2")]
+position = Vector2(365, 226)
+
+[node name="CheckerboardBlack9" parent="." unique_id=1508050254 instance=ExtResource("3_m0jcu")]
+position = Vector2(365, 272)
+
+[node name="CheckerboardBlack10" parent="." unique_id=2103384969 instance=ExtResource("2_75rm2")]
+position = Vector2(365, 321)
+
+[node name="CheckerboardBlack11" parent="." unique_id=268140672 instance=ExtResource("3_m0jcu")]
+position = Vector2(413, 319)
+
+[node name="CheckerboardBlack12" parent="." unique_id=1206453200 instance=ExtResource("2_75rm2")]
+position = Vector2(459, 320)
+
+[node name="CheckerboardBlack13" parent="." unique_id=519220886 instance=ExtResource("3_m0jcu")]
+position = Vector2(504, 321)
+
+[node name="CheckerboardBlack14" parent="." unique_id=1386215744 instance=ExtResource("2_75rm2")]
+position = Vector2(504, 272)
+
+[node name="CheckerboardBlack15" parent="." unique_id=499869918 instance=ExtResource("3_m0jcu")]
+position = Vector2(458, 272)
+
+[node name="CheckerboardBlack16" parent="." unique_id=538364425 instance=ExtResource("2_75rm2")]
+position = Vector2(411, 273)
+
+[connection signal="snake_entered" from="CheckerboardBlack" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack2" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack3" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack4" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack5" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack6" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack7" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack8" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack9" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack10" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack11" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack12" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack13" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack14" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack15" to="Player" method="_on_checkerboard_snake_entered"]
+[connection signal="snake_entered" from="CheckerboardBlack16" to="Player" method="_on_checkerboard_snake_entered"]

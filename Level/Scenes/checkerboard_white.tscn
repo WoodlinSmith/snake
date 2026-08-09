@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://o65s21ipsuqi"]
+
+[ext_resource type="PackedScene" uid="uid://dovybgcyx82sw" path="res://Level/Scenes/checkerboard_black.tscn" id="1_3xpyi"]
+
+[node name="CheckerboardBlack" unique_id=419921745 instance=ExtResource("1_3xpyi")]
+
+[node name="Sprite2D" parent="." index="1" unique_id=1998537960]
+region_rect = Rect2(64.8667, -0.3783779, 60.54225, 63.444977)
