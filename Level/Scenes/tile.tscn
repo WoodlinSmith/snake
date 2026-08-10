@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cwvmgj0grde0m"]
+
+[ext_resource type="Script" uid="uid://du54mw36v703v" path="res://Level/Scripts/tile.gd" id="1_lykhu"]
+
+[node name="BaseTile" type="Node2D" unique_id=1767237415]
+script = ExtResource("1_lykhu")
+
+[node name="BaseTileTexture" type="Sprite2D" parent="." unique_id=935687251]
+
+[node name="TopLayerTexture" type="Sprite2D" parent="." unique_id=1736687352]
+z_index = 1
