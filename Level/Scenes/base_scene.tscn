@@ -17,7 +17,7 @@ script = ExtResource("1_tjvd8")
 position = Vector2(-1.5751953, -1.7366638)
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=1083967441]
-position = Vector2(410.24982, 280.51526)
+position = Vector2(-218.14313, 218.8818)
 script = ExtResource("3_jamhv")
 
 [node name="SnakeHead" type="Sprite2D" parent="Player" unique_id=877026370]
@@ -29,7 +29,7 @@ texture = ExtResource("4_yqaf0")
 region_rect = Rect2(0, 0, 126, 157)
 
 [node name="SnakeHeadCollision" type="CollisionShape2D" parent="Player" unique_id=96843006]
-position = Vector2(0.30273438, -0.76068115)
+position = Vector2(1.7501831, 5.484741)
 shape = SubResource("RectangleShape2D_pw3qm")
 
 [node name="GridTick" type="Timer" parent="." unique_id=1058134680]
