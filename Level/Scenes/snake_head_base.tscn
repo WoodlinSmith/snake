@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://v0364ioygvig"]
+
+[ext_resource type="Script" uid="uid://bdyrta71dbpfd" path="res://Level/Scenes/snake_head_base.gd" id="1_7nv7b"]
+[ext_resource type="Texture2D" uid="uid://7ye0mqoq1ea8" path="res://Player/Textures/snake_head_64.png" id="1_sirsl"]
+
+[node name="SnakeHeadBase" type="Node2D" unique_id=368553571]
+script = ExtResource("1_7nv7b")
+
+[node name="SnakeHeadTexture" type="Sprite2D" parent="." unique_id=359862657]
+z_index = 1
+texture = ExtResource("1_sirsl")
