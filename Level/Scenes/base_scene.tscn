@@ -14,7 +14,7 @@ position = Vector2(586.5832, 332.4979)
 script = ExtResource("1_tjvd8")
 
 [node name="Camera" type="Camera2D" parent="GameBoardGrid" unique_id=982809810]
-position = Vector2(-1.5751953, -1.7366638)
+position = Vector2(65.700806, 76.05908)
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=1083967441]
 position = Vector2(-218.14313, 218.8818)
