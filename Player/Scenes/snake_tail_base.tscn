@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://b1yevprgq03qx"]
+
+[ext_resource type="Texture2D" uid="uid://becejhlquber4" path="res://Player/Textures/snake_tail_64.png" id="1_5d34p"]
+[ext_resource type="Script" uid="uid://u3ucru7mdvjr" path="res://Player/Scripts/snake_tail_base.gd" id="1_ijerw"]
+
+[node name="SnakeTailBase" type="Node2D" unique_id=1121939250]
+script = ExtResource("1_ijerw")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1399931808]
+texture = ExtResource("1_5d34p")

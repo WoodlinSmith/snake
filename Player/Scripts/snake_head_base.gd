@@ -8,6 +8,9 @@ const RIGHT = 4
 signal emit_direction(code:int)
 var curr_direction = UP
 
+var connected_part = null
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -25,4 +28,12 @@ func _process(delta: float) -> void:
 		curr_direction = RIGHT
 	
 func _on_tick() -> void:
+	if curr_direction == UP:
+		$SnakeHeadTexture.rotation = deg_to_rad(0)
+	elif curr_direction == DOWN:
+		$SnakeHeadTexture.rotation = deg_to_rad(180)
+	elif curr_direction == RIGHT:
+		$SnakeHeadTexture.rotation = deg_to_rad(90)
+	elif curr_direction == LEFT:
+		$SnakeHeadTexture.rotation = deg_to_rad(270)
 	emit_direction.emit(curr_direction)

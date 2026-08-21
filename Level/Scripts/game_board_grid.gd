@@ -4,6 +4,7 @@ const BLACK_CHECK = 1
 const PLAYER_HEAD = 3
 const PLAYER_TAIL = 4
 const PLAYER_BODY = 5
+const EMPTY = -1
 
 const UP = 1
 const DOWN = 2
@@ -12,10 +13,11 @@ const RIGHT = 4
 
 const OFFSET = 64 #64px tiles
 var tile_toggle = true
-var grid = []
+var grid_check = []
+var grid_logic = []
 var tile_scene = preload("res://Level/Scenes/tile.tscn")
-var snake_head = preload("res://Level/Scenes/snake_head_base.tscn")
-var snake_tail = preload("res://Level/Scenes/snake_tail_base.tscn")
+var snake_head = preload("res://Player/Scenes/snake_head_base.tscn")
+var snake_tail = preload("res://Player/Scenes/snake_tail_base.tscn")
 var snake_head_coords = null
 var snake_head_coords_update = null
 
@@ -28,39 +30,42 @@ func _ready() -> void:
 	
 func grid_init(length: int, width: int) -> void:
 	for i in length:
-		grid.append([])
+		grid_check.append([])
+		grid_logic.append([])
 		for j in width:
 			if tile_toggle:
-				grid[i].append(WHITE_CHECK)
+				grid_check[i].append(WHITE_CHECK)
 			else:
-				grid[i].append(BLACK_CHECK)
+				grid_check[i].append(BLACK_CHECK)
+			grid_logic[i].append(EMPTY)
 			tile_toggle = not tile_toggle
 	create_grid_board()
 	set_player_location(length - 2, width - 2)
 	create_snake_body()
 	
 func create_grid_board() -> void:
-	for i in grid.size():
-		for j in grid[i].size():
-			if grid[i][j] == WHITE_CHECK:
+	for i in grid_check.size():
+		for j in grid_check[i].size():
+			if grid_check[i][j] == WHITE_CHECK:
 				spawn_tile(WHITE_CHECK, j, i)	
 			else:
 				spawn_tile(BLACK_CHECK, j, i)
 				
 func set_player_location(y: int, x: int) -> void:
-	grid[y][x] = PLAYER_HEAD
-	grid[y+1][x] = PLAYER_TAIL
+	grid_logic[y][x] = PLAYER_HEAD
+	grid_logic[y+1][x] = PLAYER_TAIL
 	snake_head_coords =  Vector2i(x,y)
 	snake_head_coords_update = Vector2i(snake_head_coords)
 	
 
 func create_snake_body() -> void:
-	for i in grid.size():
-		for j in grid[i].size():
-			if grid[i][j] == PLAYER_HEAD:
+	for i in grid_logic.size():
+		for j in grid_logic[i].size():
+			if grid_logic[i][j] == PLAYER_HEAD:
 				spawn_snake_part(PLAYER_HEAD,j, i)
-			elif grid[i][j] == PLAYER_TAIL:
+			elif grid_logic[i][j] == PLAYER_TAIL:
 				spawn_snake_part(PLAYER_TAIL,j,i)
+	sh.connected_part = st
 				
 	
 func spawn_snake_part(part_code: int, offset_multiplier: int, row_multiplier: int) -> void:
@@ -108,20 +113,19 @@ func _on_emit_direction(dir : int) -> void:
 	elif (dir == RIGHT):
 		snake_head_coords_update.x = snake_head_coords.x + 1
 		
-	if(snake_head_coords_update.y >= grid.size()):
-		snake_head_coords_update.y = grid.size() - 1
+	if(snake_head_coords_update.y >= grid_logic.size()):
+		snake_head_coords_update.y = grid_logic.size() - 1
 	if(snake_head_coords_update.y < 0):
 		snake_head_coords_update.y = 0
 	
-	if(snake_head_coords_update.x >= grid[0].size()):
-		snake_head_coords_update.x = grid.size() - 1
+	if(snake_head_coords_update.x >= grid_logic[0].size()):
+		snake_head_coords_update.x = grid_logic.size() - 1
 	if(snake_head_coords_update.x < 0):
 		snake_head_coords_update.x = 0 
 	
-	#Maybe we want to create 2 grid data structures - one for initializing the
-	#board, one for tracking game logic?
-	grid[snake_head_coords_update.y][snake_head_coords_update.x] = PLAYER_HEAD
-	grid[snake_head_coords.y][snake_head_coords.x] = BLACK_CHECK
+	
+	grid_logic[snake_head_coords_update.y][snake_head_coords_update.x] = PLAYER_HEAD
+	grid_logic[snake_head_coords.y][snake_head_coords.x] = EMPTY
 	#calculate new position for snake_head
 	var new_pos = Vector2(sh.global_position)
 	if(dir == UP):
