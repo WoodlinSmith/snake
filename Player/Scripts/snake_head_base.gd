@@ -5,10 +5,14 @@ const DOWN = 2
 const LEFT = 3
 const RIGHT = 4
 
-signal emit_direction(code:int)
+signal emit_direction(code:int, head:Node2D, coords :Vector2i)
 var curr_direction = UP
+var prev_direction = UP
 
+var grid_coords = null
 var connected_part = null
+
+
 
 
 # Called when the node enters the scene tree for the first time.
@@ -36,4 +40,10 @@ func _on_tick() -> void:
 		$SnakeHeadTexture.rotation = deg_to_rad(90)
 	elif curr_direction == LEFT:
 		$SnakeHeadTexture.rotation = deg_to_rad(270)
-	emit_direction.emit(curr_direction)
+	emit_direction.emit(curr_direction, self, $Coords.coords)
+	connected_part.curr_direction = prev_direction
+	prev_direction = curr_direction
+	connected_part._on_tick()
+	
+func _set_coords(coords : Vector2i) -> void:
+	$Coords.coords = coords

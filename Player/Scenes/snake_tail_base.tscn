@@ -2,9 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://becejhlquber4" path="res://Player/Textures/snake_tail_64.png" id="1_5d34p"]
 [ext_resource type="Script" uid="uid://u3ucru7mdvjr" path="res://Player/Scripts/snake_tail_base.gd" id="1_ijerw"]
+[ext_resource type="Script" uid="uid://blxjjf4a0s03" path="res://Player/Scripts/coords.gd" id="3_setid"]
 
 [node name="SnakeTailBase" type="Node2D" unique_id=1121939250]
 script = ExtResource("1_ijerw")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1399931808]
+[node name="SnakeTailTexture" type="Sprite2D" parent="." unique_id=1399931808]
 texture = ExtResource("1_5d34p")
+
+[node name="Coords" type="Node2D" parent="." unique_id=300024639]
+script = ExtResource("3_setid")

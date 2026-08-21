@@ -65,8 +65,8 @@ func create_snake_body() -> void:
 				spawn_snake_part(PLAYER_HEAD,j, i)
 			elif grid_logic[i][j] == PLAYER_TAIL:
 				spawn_snake_part(PLAYER_TAIL,j,i)
-	sh.connected_part = st
-				
+	
+	
 	
 func spawn_snake_part(part_code: int, offset_multiplier: int, row_multiplier: int) -> void:
 	if part_code == PLAYER_HEAD:
@@ -74,11 +74,15 @@ func spawn_snake_part(part_code: int, offset_multiplier: int, row_multiplier: in
 		sh.global_position.x = OFFSET * offset_multiplier
 		sh.global_position.y = OFFSET * row_multiplier
 		sh.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
+		sh._set_coords(Vector2i(offset_multiplier,row_multiplier))
 		add_child(sh)
 	elif part_code == PLAYER_TAIL:
 		st = snake_tail.instantiate()
-		st.global_position.x = OFFSET * offset_multiplier
-		st.global_position.y = OFFSET * row_multiplier
+		st.global_position.x =  OFFSET * offset_multiplier
+		st.global_position.y =  OFFSET * row_multiplier
+		st.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
+		st._set_coords(Vector2i(offset_multiplier, row_multiplier))
+		sh.connected_part = st
 		add_child(st)
 
 	
@@ -102,32 +106,33 @@ func _on_grid_tick_timeout() -> void:
 	sh._on_tick()
 	pass # Replace with function body.
 	
-func _on_emit_direction(dir : int) -> void:
+func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> void:
 	#Need a better way to reference these as global constants
+	var part_coords_update = Vector2i(part_coords)
 	if(dir == UP):
-		snake_head_coords_update.y = snake_head_coords.y - 1
+		part_coords_update.y = part_coords.y - 1
 	elif(dir == DOWN):
-		snake_head_coords_update.y = snake_head_coords.y + 1
+		part_coords_update.y = part_coords.y + 1
 	elif(dir == LEFT):
-		snake_head_coords_update.x = snake_head_coords.x - 1
+		part_coords_update.x = part_coords.x - 1
 	elif (dir == RIGHT):
-		snake_head_coords_update.x = snake_head_coords.x + 1
+		part_coords_update.x = part_coords.x + 1
 		
-	if(snake_head_coords_update.y >= grid_logic.size()):
-		snake_head_coords_update.y = grid_logic.size() - 1
-	if(snake_head_coords_update.y < 0):
-		snake_head_coords_update.y = 0
+	if(part_coords_update.y >= grid_logic.size()):
+		part_coords_update.y = grid_logic.size() - 1
+	if(part_coords_update.y < 0):
+		part_coords_update.y = 0
 	
-	if(snake_head_coords_update.x >= grid_logic[0].size()):
-		snake_head_coords_update.x = grid_logic.size() - 1
-	if(snake_head_coords_update.x < 0):
-		snake_head_coords_update.x = 0 
+	if(part_coords_update.x >= grid_logic[0].size()):
+		part_coords_update.x = grid_logic.size() - 1
+	if(part_coords_update.x < 0):
+		part_coords_update.x = 0 
 	
 	
-	grid_logic[snake_head_coords_update.y][snake_head_coords_update.x] = PLAYER_HEAD
-	grid_logic[snake_head_coords.y][snake_head_coords.x] = EMPTY
+	grid_logic[part_coords_update.y][part_coords_update.x] = PLAYER_HEAD
+	grid_logic[part_coords.y][part_coords.x] = EMPTY
 	#calculate new position for snake_head
-	var new_pos = Vector2(sh.global_position)
+	var new_pos = Vector2(part.global_position)
 	if(dir == UP):
 		new_pos.y = new_pos.y - OFFSET
 	elif(dir == DOWN):
@@ -138,5 +143,6 @@ func _on_emit_direction(dir : int) -> void:
 		new_pos.x = new_pos.x + OFFSET
 	
 	var tween = create_tween()
-	tween.tween_property(sh,"global_position", new_pos, 1.0)
+	tween.tween_property(part,"global_position", new_pos, 1.0)
+	part._set_coords(part_coords_update)
 	
