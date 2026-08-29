@@ -18,14 +18,16 @@ var grid_logic = []
 var tile_scene = preload("res://Level/Scenes/tile.tscn")
 var snake_head = preload("res://Player/Scenes/snake_head_base.tscn")
 var snake_tail = preload("res://Player/Scenes/snake_tail_base.tscn")
-var snake_head_coords = null
-var snake_head_coords_update = null
+var snake_body = preload("res://Player/Scenes/snake_body_base.tscn")
 
+
+#initial states for each component
 var sh = null
 var st = null
+var sb = null
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	grid_init(5,5)
+	grid_init(9,9)
 	pass # Replace with function body.
 	
 func grid_init(length: int, width: int) -> void:
@@ -40,7 +42,7 @@ func grid_init(length: int, width: int) -> void:
 			grid_logic[i].append(EMPTY)
 			tile_toggle = not tile_toggle
 	create_grid_board()
-	set_player_location(length - 2, width - 2)
+	set_player_location(length - 3, width - 3)
 	create_snake_body()
 	
 func create_grid_board() -> void:
@@ -53,18 +55,21 @@ func create_grid_board() -> void:
 				
 func set_player_location(y: int, x: int) -> void:
 	grid_logic[y][x] = PLAYER_HEAD
-	grid_logic[y+1][x] = PLAYER_TAIL
-	snake_head_coords =  Vector2i(x,y)
-	snake_head_coords_update = Vector2i(snake_head_coords)
+	grid_logic[y+1][x] = PLAYER_BODY
+	grid_logic[y+2][x] = PLAYER_TAIL
 	
 
 func create_snake_body() -> void:
 	for i in grid_logic.size():
 		for j in grid_logic[i].size():
 			if grid_logic[i][j] == PLAYER_HEAD:
-				spawn_snake_part(PLAYER_HEAD,j, i)
+				spawn_snake_part(PLAYER_HEAD,j,i)
 			elif grid_logic[i][j] == PLAYER_TAIL:
 				spawn_snake_part(PLAYER_TAIL,j,i)
+			elif grid_logic[i][j] == PLAYER_BODY:
+				spawn_snake_part(PLAYER_BODY,j,i)
+	sh.connected_part = sb
+	sb.connected_part = st
 	
 	
 	
@@ -82,8 +87,14 @@ func spawn_snake_part(part_code: int, offset_multiplier: int, row_multiplier: in
 		st.global_position.y =  OFFSET * row_multiplier
 		st.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
 		st._set_coords(Vector2i(offset_multiplier, row_multiplier))
-		sh.connected_part = st
 		add_child(st)
+	elif part_code == PLAYER_BODY:
+		sb = snake_body.instantiate()
+		sb.global_position.x = OFFSET * offset_multiplier
+		sb.global_position.y = OFFSET * row_multiplier
+		sb.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
+		sb._set_coords(Vector2i(offset_multiplier, row_multiplier))
+		add_child(sb)
 
 	
 func spawn_tile(tile_type: int, offset_multiplier: int, row_multiplier: int) -> void:
@@ -129,18 +140,32 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 		part_coords_update.x = 0 
 	
 	
-	grid_logic[part_coords_update.y][part_coords_update.x] = PLAYER_HEAD
+	
+	grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
 	grid_logic[part_coords.y][part_coords.x] = EMPTY
 	#calculate new position for snake_head
 	var new_pos = Vector2(part.global_position)
 	if(dir == UP):
-		new_pos.y = new_pos.y - OFFSET
+		if(part_coords_update.y != part_coords.y):
+			new_pos.y = new_pos.y - OFFSET
+		else:
+			new_pos.y = new_pos.y
+
 	elif(dir == DOWN):
-		new_pos.y = new_pos.y + OFFSET
+		if(part_coords_update.y != part_coords.y):
+			new_pos.y = new_pos.y + OFFSET
+		else:
+			new_pos.y = new_pos.y
 	elif(dir == LEFT):
-		new_pos.x = new_pos.x - OFFSET
+		if(part_coords_update.x != part_coords.x):
+			new_pos.x = new_pos.x - OFFSET
+		else:
+			new_pos.x = new_pos.x
 	elif (dir == RIGHT):
-		new_pos.x = new_pos.x + OFFSET
+		if(part_coords_update.x != part_coords.x):
+			new_pos.x = new_pos.x + OFFSET
+		else:
+			new_pos.x = new_pos.x
 	
 	var tween = create_tween()
 	tween.tween_property(part,"global_position", new_pos, 1.0)

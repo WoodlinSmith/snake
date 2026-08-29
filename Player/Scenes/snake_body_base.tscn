@@ -1,5 +1,16 @@
 [gd_scene format=3 uid="uid://bffa20mat2k3f"]
 
+[ext_resource type="Script" uid="uid://coodxamdsrnbo" path="res://Player/Scripts/snake_body_base.gd" id="1_i2cgj"]
+[ext_resource type="Script" uid="uid://blxjjf4a0s03" path="res://Player/Scripts/coords.gd" id="2_w3hyt"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_i2cgj"]
+load_path = "res://.godot/imported/snake_body_straight_64.png-c018d78154ce912f44c7beb01a14f3c7.ctex"
+
 [node name="SnakeBodyBase" type="Node2D" unique_id=977255052]
+script = ExtResource("1_i2cgj")
 
 [node name="SnakeBodyTexture" type="Sprite2D" parent="." unique_id=222568892]
+texture = SubResource("CompressedTexture2D_i2cgj")
+
+[node name="Coords" type="Node2D" parent="." unique_id=806009259]
+script = ExtResource("2_w3hyt")
