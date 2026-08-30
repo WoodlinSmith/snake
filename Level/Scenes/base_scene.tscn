@@ -1,11 +1,6 @@
 [gd_scene format=3 uid="uid://cb2ulnaj8c7hg"]
 
 [ext_resource type="Script" uid="uid://c2t4elp20tgo8" path="res://Level/Scripts/game_board_grid.gd" id="1_tjvd8"]
-[ext_resource type="Script" uid="uid://dgfo87pnb7uyy" path="res://player.gd" id="3_jamhv"]
-[ext_resource type="Texture2D" uid="uid://dny18f775j4ap" path="res://Player/Textures/snake_head.png" id="4_yqaf0"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pw3qm"]
-size = Vector2(38, 35)
 
 [node name="BaseScene" type="Node2D" unique_id=359248523]
 
@@ -15,22 +10,6 @@ script = ExtResource("1_tjvd8")
 
 [node name="Camera" type="Camera2D" parent="GameBoardGrid" unique_id=982809810]
 position = Vector2(423.4168, 242.5021)
-
-[node name="Player" type="CharacterBody2D" parent="." unique_id=1083967441]
-position = Vector2(-218.14313, 218.8818)
-script = ExtResource("3_jamhv")
-
-[node name="SnakeHead" type="Sprite2D" parent="Player" unique_id=877026370]
-visibility_layer = 783
-z_index = 1
-position = Vector2(0.2763672, 0.20315552)
-scale = Vector2(0.2777778, 0.21337579)
-texture = ExtResource("4_yqaf0")
-region_rect = Rect2(0, 0, 126, 157)
-
-[node name="SnakeHeadCollision" type="CollisionShape2D" parent="Player" unique_id=96843006]
-position = Vector2(1.7501831, 5.484741)
-shape = SubResource("RectangleShape2D_pw3qm")
 
 [node name="GridTick" type="Timer" parent="." unique_id=1058134680]
 autostart = true

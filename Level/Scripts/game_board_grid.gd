@@ -5,6 +5,7 @@ const PLAYER_HEAD = 3
 const PLAYER_TAIL = 4
 const PLAYER_BODY = 5
 const EMPTY = -1
+const FOOD = 2
 
 const UP = 1
 const DOWN = 2
@@ -16,9 +17,12 @@ var tile_toggle = true
 var grid_check = []
 var grid_logic = []
 var tile_scene = preload("res://Level/Scenes/tile.tscn")
+var food_scene = preload("res://Food/Scenes/food.tscn")
 var snake_head = preload("res://Player/Scenes/snake_head_base.tscn")
 var snake_tail = preload("res://Player/Scenes/snake_tail_base.tscn")
 var snake_body = preload("res://Player/Scenes/snake_body_base.tscn")
+
+var max_food_spawned = false
 
 
 #initial states for each component
@@ -115,6 +119,7 @@ func _process(delta: float) -> void:
 
 func _on_grid_tick_timeout() -> void:
 	sh._on_tick()
+	try_spawn_food()
 	pass # Replace with function body.
 	
 func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> void:
@@ -141,8 +146,14 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	
 	
 	
-	grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
-	grid_logic[part_coords.y][part_coords.x] = EMPTY
+	if(grid_logic[part_coords_update.y][part_coords_update.x] == EMPTY
+	or grid_logic[part_coords_update.y][part_coords_update.x] == FOOD):
+		grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
+		grid_logic[part_coords.y][part_coords.x] = EMPTY
+	elif(grid_logic[part_coords_update.y][part_coords_update.x] != EMPTY
+	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD):
+		grid_logic[part_coords.y][part_coords.x] = grid_logic[part_coords.y][part_coords.x]
+
 	#calculate new position for snake_head
 	var new_pos = Vector2(part.global_position)
 	if(dir == UP):
@@ -170,4 +181,31 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	var tween = create_tween()
 	tween.tween_property(part,"global_position", new_pos, 1.0)
 	part._set_coords(part_coords_update)
+	if(OS.is_debug_build()):
+		print_grid_to_console()
+	
+func print_grid_to_console() -> void:
+	print("-------NEW TICK--------")
+	for i in grid_logic.size():
+		var print_list = []
+		for j in grid_logic[i].size():
+			print_list.append(grid_logic[i][j])
+		print(print_list)
+	print("-------END TICK--------")
+	
+
+func try_spawn_food() -> void:
+	if not max_food_spawned:
+		var row = randi_range(0, grid_logic.size())
+		var col = randi_range(0, grid_logic[0].size())
+		if(grid_logic[row][col] == EMPTY):
+			grid_logic[row][col] = FOOD
+			spawn_food(row, col)
+			max_food_spawned = true
+			
+func spawn_food(row: int, col: int) -> void:
+	var f = food_scene.instantiate()
+	f.global_position.x = OFFSET * col
+	f.global_position.y = OFFSET * row
+	add_child(f)
 	
