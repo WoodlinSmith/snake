@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://b76ngxx0i5xxa"]
 
 [ext_resource type="Texture2D" uid="uid://f3w8ekwpcxmu" path="res://Food/Textures/apple_64.png" id="1_6v55c"]
+[ext_resource type="Script" uid="uid://byjr7oifv6b84" path="res://Food/Scripts/food.gd" id="1_mtyb0"]
 
 [node name="Food" type="Node2D" unique_id=1974156992]
+script = ExtResource("1_mtyb0")
 
 [node name="FoodTexture" type="Sprite2D" parent="." unique_id=391734772]
 texture = ExtResource("1_6v55c")

@@ -29,6 +29,7 @@ var max_food_spawned = false
 var sh = null
 var st = null
 var sb = null
+var fd = null 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	grid_init(9,9)
@@ -148,6 +149,10 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	
 	if(grid_logic[part_coords_update.y][part_coords_update.x] == EMPTY
 	or grid_logic[part_coords_update.y][part_coords_update.x] == FOOD):
+		if(grid_logic[part_coords_update.y][part_coords_update.x] == FOOD
+		and grid_logic[part_coords.y][part_coords.x] == PLAYER_HEAD):
+			fd._on_eat()
+			max_food_spawned = false
 		grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
 		grid_logic[part_coords.y][part_coords.x] = EMPTY
 	elif(grid_logic[part_coords_update.y][part_coords_update.x] != EMPTY
@@ -208,4 +213,5 @@ func spawn_food(row: int, col: int) -> void:
 	f.global_position.x = OFFSET * col
 	f.global_position.y = OFFSET * row
 	add_child(f)
+	fd = f
 	
