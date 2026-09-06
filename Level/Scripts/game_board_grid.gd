@@ -101,7 +101,14 @@ func spawn_snake_part(part_code: int, offset_multiplier: int, row_multiplier: in
 		sb._set_coords(Vector2i(offset_multiplier, row_multiplier))
 		add_child(sb)
 
-	
+
+func snake_eat_spawn(offset_multiplier: int, row_multiplier: int) -> void:
+	var curr_bod = sb
+	spawn_snake_part(PLAYER_BODY, offset_multiplier, row_multiplier)
+	sh.connected_part = sb
+	sb.connected_part = curr_bod
+	sb.curr_direction = curr_bod.curr_direction
+	sb.prev_direction = curr_bod.prev_direction
 func spawn_tile(tile_type: int, offset_multiplier: int, row_multiplier: int) -> void:
 	var t = tile_scene.instantiate()
 	t.global_position.x = OFFSET * offset_multiplier
@@ -146,21 +153,24 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 		part_coords_update.x = 0 
 	
 	
-	
+	var ate = false
 	if(grid_logic[part_coords_update.y][part_coords_update.x] == EMPTY
 	or grid_logic[part_coords_update.y][part_coords_update.x] == FOOD):
 		if(grid_logic[part_coords_update.y][part_coords_update.x] == FOOD
 		and grid_logic[part_coords.y][part_coords.x] == PLAYER_HEAD):
+			ate = true
 			fd._on_eat()
 			max_food_spawned = false
 		grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
 		grid_logic[part_coords.y][part_coords.x] = EMPTY
 	elif(grid_logic[part_coords_update.y][part_coords_update.x] != EMPTY
-	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD
-	and grid_logic[part_coords.y][part_coords.x] != PLAYER_HEAD):
+	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD):
 		part_coords_update = part_coords
 		grid_logic[part_coords.y][part_coords.x] = grid_logic[part_coords.y][part_coords.x]
 
+	if ate:
+		grid_logic[part_coords.y][part_coords.x] = PLAYER_BODY
+		snake_eat_spawn(part_coords.x, part_coords.y)
 	#calculate new position
 	var new_pos = Vector2(part.global_position)
 	if(dir == UP):
@@ -188,6 +198,8 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	var tween = create_tween()
 	tween.tween_property(part,"global_position", new_pos, 1.0)
 	part._set_coords(part_coords_update)
+
+		
 	if(OS.is_debug_build()):
 		print_grid_to_console()
 	
