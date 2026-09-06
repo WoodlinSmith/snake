@@ -156,10 +156,12 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 		grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
 		grid_logic[part_coords.y][part_coords.x] = EMPTY
 	elif(grid_logic[part_coords_update.y][part_coords_update.x] != EMPTY
-	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD):
+	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD
+	and grid_logic[part_coords.y][part_coords.x] != PLAYER_HEAD):
+		part_coords_update = part_coords
 		grid_logic[part_coords.y][part_coords.x] = grid_logic[part_coords.y][part_coords.x]
 
-	#calculate new position for snake_head
+	#calculate new position
 	var new_pos = Vector2(part.global_position)
 	if(dir == UP):
 		if(part_coords_update.y != part_coords.y):
@@ -201,8 +203,8 @@ func print_grid_to_console() -> void:
 
 func try_spawn_food() -> void:
 	if not max_food_spawned:
-		var row = randi_range(0, grid_logic.size())
-		var col = randi_range(0, grid_logic[0].size())
+		var row = randi_range(0, grid_logic.size()-1)
+		var col = randi_range(0, grid_logic[0].size()-1)
 		if(grid_logic[row][col] == EMPTY):
 			grid_logic[row][col] = FOOD
 			spawn_food(row, col)
