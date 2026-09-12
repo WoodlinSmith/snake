@@ -128,7 +128,10 @@ func _process(delta: float) -> void:
 func _on_grid_tick_timeout() -> void:
 	sh._on_tick()
 	try_spawn_food()
+	if(OS.is_debug_build()):
+		print_grid_to_console()
 	pass # Replace with function body.
+
 	
 func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> void:
 	#Need a better way to reference these as global constants
@@ -152,7 +155,7 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	if(part_coords_update.x < 0):
 		part_coords_update.x = 0 
 	
-	
+	part.is_valid = true
 	var ate = false
 	if(grid_logic[part_coords_update.y][part_coords_update.x] == EMPTY
 	or grid_logic[part_coords_update.y][part_coords_update.x] == FOOD):
@@ -167,7 +170,7 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD):
 		part_coords_update = part_coords
 		grid_logic[part_coords.y][part_coords.x] = grid_logic[part_coords.y][part_coords.x]
-
+		part.is_valid = false
 	if ate:
 		grid_logic[part_coords.y][part_coords.x] = PLAYER_BODY
 		snake_eat_spawn(part_coords.x, part_coords.y)
@@ -200,8 +203,7 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	part._set_coords(part_coords_update)
 
 		
-	if(OS.is_debug_build()):
-		print_grid_to_console()
+
 	
 func print_grid_to_console() -> void:
 	print("-------NEW TICK--------")

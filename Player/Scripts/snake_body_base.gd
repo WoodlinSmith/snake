@@ -9,6 +9,7 @@ var curr_direction = UP
 var prev_direction = UP
 
 var connected_part = null
+var is_valid = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,6 +23,7 @@ func _process(delta: float) -> void:
 	
 func _on_tick() -> void:
 	if curr_direction == UP:
+		
 		$SnakeBodyTexture.rotation = deg_to_rad(0)
 	elif curr_direction == DOWN:
 		$SnakeBodyTexture.rotation = deg_to_rad(180)
@@ -30,8 +32,10 @@ func _on_tick() -> void:
 	elif curr_direction == LEFT:
 		$SnakeBodyTexture.rotation = deg_to_rad(270)
 	emit_direction.emit(curr_direction, self, $Coords.coords)
-	connected_part.curr_direction = prev_direction
-	prev_direction = curr_direction
+
+	if is_valid:
+		connected_part.curr_direction = prev_direction
+		prev_direction = curr_direction
 	connected_part._on_tick()
 	
 func _on_food(conn_part : Node2D) -> void:

@@ -11,6 +11,8 @@ var prev_direction = UP
 
 var connected_part = null
 
+var is_valid = true
+
 
 
 
@@ -40,9 +42,12 @@ func _on_tick() -> void:
 	elif curr_direction == LEFT:
 		$SnakeHeadTexture.rotation = deg_to_rad(270)
 	emit_direction.emit(curr_direction, self, $Coords.coords)
-	connected_part.curr_direction = prev_direction
-	prev_direction = curr_direction
+
+	if is_valid:
+		connected_part.curr_direction = prev_direction
+		prev_direction = curr_direction
 	connected_part._on_tick()
+
 	
 func _set_coords(coords : Vector2i) -> void:
 	$Coords.coords = coords

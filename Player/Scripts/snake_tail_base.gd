@@ -5,6 +5,7 @@ const LEFT = 3
 const RIGHT = 4
 
 var curr_direction = UP
+var is_valid = true
 signal emit_direction(code:int, head:Node2D, coords :Vector2i)
 
 # Called when the node enters the scene tree for the first time.
