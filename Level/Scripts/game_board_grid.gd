@@ -24,6 +24,8 @@ var snake_body = preload("res://Player/Scenes/snake_body_base.tscn")
 
 var max_food_spawned = false
 
+var game_over = false
+
 
 #initial states for each component
 var sh = null
@@ -126,8 +128,9 @@ func _process(delta: float) -> void:
 
 
 func _on_grid_tick_timeout() -> void:
-	sh._on_tick()
-	try_spawn_food()
+	if not game_over:
+		sh._on_tick()
+		try_spawn_food()
 	if(OS.is_debug_build()):
 		print_grid_to_console()
 	pass # Replace with function body.
@@ -168,9 +171,15 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 		grid_logic[part_coords.y][part_coords.x] = EMPTY
 	elif(grid_logic[part_coords_update.y][part_coords_update.x] != EMPTY
 	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD):
-		part_coords_update = part_coords
-		grid_logic[part_coords.y][part_coords.x] = grid_logic[part_coords.y][part_coords.x]
-		part.is_valid = false
+		if grid_logic[part_coords.y][part_coords.x] != PLAYER_HEAD:
+			part_coords_update = part_coords
+			grid_logic[part_coords.y][part_coords.x] = grid_logic[part_coords.y][part_coords.x]
+			part.is_valid = false
+		else:
+			grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
+			grid_logic[part_coords.y][part_coords.x] = EMPTY
+			game_over = true
+	
 	if ate:
 		grid_logic[part_coords.y][part_coords.x] = PLAYER_BODY
 		snake_eat_spawn(part_coords.x, part_coords.y)

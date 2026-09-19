@@ -4,14 +4,35 @@
 
 [node name="BaseScene" type="Node2D" unique_id=359248523]
 
+[node name="Camera" type="Camera2D" parent="." unique_id=982809810]
+position = Vector2(868, 578)
+
 [node name="GameBoardGrid" type="Node2D" parent="." unique_id=1980438574]
 position = Vector2(586.5832, 332.4979)
 script = ExtResource("1_tjvd8")
 
-[node name="Camera" type="Camera2D" parent="GameBoardGrid" unique_id=982809810]
-position = Vector2(423.4168, 242.5021)
-
 [node name="GridTick" type="Timer" parent="." unique_id=1058134680]
 autostart = true
+
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=1305734200]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UILayer" unique_id=1814585087]
+anchors_preset = -1
+anchor_left = 0.085
+anchor_top = 0.26200002
+anchor_right = 0.17300001
+anchor_bottom = 0.324
+offset_left = 0.08000183
+offset_top = 0.22398376
+offset_right = -0.29600525
+offset_bottom = 0.04800415
+
+[node name="Label" type="Label" parent="UILayer/HBoxContainer" unique_id=2029799216]
+layout_mode = 2
+text = "Snake!"
+
+[node name="Label2" type="Label" parent="UILayer/HBoxContainer" unique_id=1103902414]
+layout_mode = 2
+text = "Hello!"
 
 [connection signal="timeout" from="GridTick" to="GameBoardGrid" method="_on_grid_tick_timeout"]
