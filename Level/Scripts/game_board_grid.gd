@@ -13,6 +13,10 @@ const LEFT = 3
 const RIGHT = 4
 
 const OFFSET = 64 #64px tiles
+
+signal game_loss(final_score:int)
+signal restart_game
+
 var tile_toggle = true
 var grid_check = []
 var grid_logic = []
@@ -25,6 +29,9 @@ var snake_body = preload("res://Player/Scenes/snake_body_base.tscn")
 var max_food_spawned = false
 
 var game_over = false
+
+var score = 0
+
 
 
 #initial states for each component
@@ -167,6 +174,7 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 			ate = true
 			fd._on_eat()
 			max_food_spawned = false
+			score += 1
 		grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
 		grid_logic[part_coords.y][part_coords.x] = EMPTY
 	elif(grid_logic[part_coords_update.y][part_coords_update.x] != EMPTY
@@ -179,6 +187,7 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 			grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
 			grid_logic[part_coords.y][part_coords.x] = EMPTY
 			game_over = true
+			game_loss.emit(score)
 	
 	if ate:
 		grid_logic[part_coords.y][part_coords.x] = PLAYER_BODY
@@ -240,3 +249,28 @@ func spawn_food(row: int, col: int) -> void:
 	add_child(f)
 	fd = f
 	
+
+
+func _on_game_over_select_item_selected(index: int) -> void:
+	if index == 0:
+		restart_game.emit()
+		score = 0
+		grid_logic = []
+		grid_check = []
+		sh = null
+		sb = null
+		fd = null
+		st = null
+		max_food_spawned = false
+		game_over = false
+		_clear_children()
+		grid_init(9,9)
+		
+	if index == 1:
+		queue_free()
+		get_tree().quit()
+	pass # Replace with function body.
+	
+func _clear_children() -> void:
+	for child in get_children():
+		child.queue_free()
