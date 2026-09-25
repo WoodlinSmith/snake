@@ -1,18 +1,5 @@
 extends Node2D
-const WHITE_CHECK = 0
-const BLACK_CHECK = 1
-const PLAYER_HEAD = 3
-const PLAYER_TAIL = 4
-const PLAYER_BODY = 5
-const EMPTY = -1
-const FOOD = 2
 
-const UP = 1
-const DOWN = 2
-const LEFT = 3
-const RIGHT = 4
-
-const OFFSET = 64 #64px tiles
 
 signal game_loss(final_score:int)
 signal restart_game
@@ -41,7 +28,7 @@ var sb = null
 var fd = null 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	grid_init(9,9)
+	_init_board()
 	pass # Replace with function body.
 	
 func grid_init(length: int, width: int) -> void:
@@ -50,10 +37,10 @@ func grid_init(length: int, width: int) -> void:
 		grid_logic.append([])
 		for j in width:
 			if tile_toggle:
-				grid_check[i].append(WHITE_CHECK)
+				grid_check[i].append(CheckerboardConstants.WHITE_CHECK)
 			else:
-				grid_check[i].append(BLACK_CHECK)
-			grid_logic[i].append(EMPTY)
+				grid_check[i].append(CheckerboardConstants.BLACK_CHECK)
+			grid_logic[i].append(LogicConstants.EMPTY)
 			tile_toggle = not tile_toggle
 	create_grid_board()
 	set_player_location(length - 3, width - 3)
@@ -62,66 +49,54 @@ func grid_init(length: int, width: int) -> void:
 func create_grid_board() -> void:
 	for i in grid_check.size():
 		for j in grid_check[i].size():
-			if grid_check[i][j] == WHITE_CHECK:
-				spawn_tile(WHITE_CHECK, j, i)	
+			if grid_check[i][j] == CheckerboardConstants.WHITE_CHECK:
+				spawn_tile(CheckerboardConstants.WHITE_CHECK, j, i)	
 			else:
-				spawn_tile(BLACK_CHECK, j, i)
+				spawn_tile(CheckerboardConstants.BLACK_CHECK, j, i)
 				
 func set_player_location(y: int, x: int) -> void:
-	grid_logic[y][x] = PLAYER_HEAD
-	grid_logic[y+1][x] = PLAYER_BODY
-	grid_logic[y+2][x] = PLAYER_TAIL
+	grid_logic[y][x] = LogicConstants.PLAYER_HEAD
+	grid_logic[y+1][x] = LogicConstants.PLAYER_BODY
+	grid_logic[y+2][x] = LogicConstants.PLAYER_TAIL
 	
 
 func create_snake_body() -> void:
 	for i in grid_logic.size():
 		for j in grid_logic[i].size():
-			if grid_logic[i][j] == PLAYER_HEAD:
-				spawn_snake_part(PLAYER_HEAD,j,i)
-			elif grid_logic[i][j] == PLAYER_TAIL:
-				spawn_snake_part(PLAYER_TAIL,j,i)
-			elif grid_logic[i][j] == PLAYER_BODY:
-				spawn_snake_part(PLAYER_BODY,j,i)
+			if grid_logic[i][j] == LogicConstants.PLAYER_HEAD:
+				spawn_snake_part(LogicConstants.PLAYER_HEAD,j,i)
+			elif grid_logic[i][j] == LogicConstants.PLAYER_TAIL:
+				spawn_snake_part(LogicConstants.PLAYER_TAIL,j,i)
+			elif grid_logic[i][j] == LogicConstants.PLAYER_BODY:
+				spawn_snake_part(LogicConstants.PLAYER_BODY,j,i)
 	sh.connected_part = sb
 	sb.connected_part = st
 	
 	
 	
 func spawn_snake_part(part_code: int, offset_multiplier: int, row_multiplier: int) -> void:
-	if part_code == PLAYER_HEAD:
+	if part_code == LogicConstants.PLAYER_HEAD:
 		sh = snake_head.instantiate()
-		sh.global_position.x = OFFSET * offset_multiplier
-		sh.global_position.y = OFFSET * row_multiplier
-		sh.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
-		sh._set_coords(Vector2i(offset_multiplier,row_multiplier))
-		add_child(sh)
-	elif part_code == PLAYER_TAIL:
+		_init_snake_part(sh, offset_multiplier, row_multiplier)
+	elif part_code == LogicConstants.PLAYER_TAIL:
 		st = snake_tail.instantiate()
-		st.global_position.x =  OFFSET * offset_multiplier
-		st.global_position.y =  OFFSET * row_multiplier
-		st.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
-		st._set_coords(Vector2i(offset_multiplier, row_multiplier))
-		add_child(st)
-	elif part_code == PLAYER_BODY:
+		_init_snake_part(st, offset_multiplier, row_multiplier)
+	elif part_code == LogicConstants.PLAYER_BODY:
 		sb = snake_body.instantiate()
-		sb.global_position.x = OFFSET * offset_multiplier
-		sb.global_position.y = OFFSET * row_multiplier
-		sb.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
-		sb._set_coords(Vector2i(offset_multiplier, row_multiplier))
-		add_child(sb)
+		_init_snake_part(sb, offset_multiplier, row_multiplier)
 
 
 func snake_eat_spawn(offset_multiplier: int, row_multiplier: int) -> void:
 	var curr_bod = sb
-	spawn_snake_part(PLAYER_BODY, offset_multiplier, row_multiplier)
+	spawn_snake_part(LogicConstants.PLAYER_BODY, offset_multiplier, row_multiplier)
 	sh.connected_part = sb
 	sb.connected_part = curr_bod
 	sb.curr_direction = curr_bod.curr_direction
 	sb.prev_direction = curr_bod.prev_direction
 func spawn_tile(tile_type: int, offset_multiplier: int, row_multiplier: int) -> void:
 	var t = tile_scene.instantiate()
-	t.global_position.x = OFFSET * offset_multiplier
-	t.global_position.y = OFFSET * row_multiplier
+	t.global_position.x = CheckerboardConstants.OFFSET * offset_multiplier
+	t.global_position.y = CheckerboardConstants.OFFSET * row_multiplier
 	add_child(t)
 	t.set_base(tile_type)
 
@@ -144,15 +119,14 @@ func _on_grid_tick_timeout() -> void:
 
 	
 func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> void:
-	#Need a better way to reference these as global constants
 	var part_coords_update = Vector2i(part_coords)
-	if(dir == UP):
+	if(dir == DirectionConstants.UP):
 		part_coords_update.y = part_coords.y - 1
-	elif(dir == DOWN):
+	elif(dir == DirectionConstants.DOWN):
 		part_coords_update.y = part_coords.y + 1
-	elif(dir == LEFT):
+	elif(dir == DirectionConstants.LEFT):
 		part_coords_update.x = part_coords.x - 1
-	elif (dir == RIGHT):
+	elif (dir == DirectionConstants.RIGHT):
 		part_coords_update.x = part_coords.x + 1
 		
 	if(part_coords_update.y >= grid_logic.size()):
@@ -167,60 +141,58 @@ func _on_emit_direction(dir : int, part : Node2D, part_coords : Vector2i) -> voi
 	
 	part.is_valid = true
 	var ate = false
-	if(grid_logic[part_coords_update.y][part_coords_update.x] == EMPTY
-	or grid_logic[part_coords_update.y][part_coords_update.x] == FOOD):
-		if(grid_logic[part_coords_update.y][part_coords_update.x] == FOOD
-		and grid_logic[part_coords.y][part_coords.x] == PLAYER_HEAD):
+	if(grid_logic[part_coords_update.y][part_coords_update.x] == LogicConstants.EMPTY
+	or grid_logic[part_coords_update.y][part_coords_update.x] == LogicConstants.FOOD):
+		if(grid_logic[part_coords_update.y][part_coords_update.x] == LogicConstants.FOOD
+		and grid_logic[part_coords.y][part_coords.x] == LogicConstants.PLAYER_HEAD):
 			ate = true
 			fd._on_eat()
 			max_food_spawned = false
 			score += 1
 		grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
-		grid_logic[part_coords.y][part_coords.x] = EMPTY
-	elif(grid_logic[part_coords_update.y][part_coords_update.x] != EMPTY
-	and grid_logic[part_coords_update.y][part_coords_update.x] != FOOD):
-		if grid_logic[part_coords.y][part_coords.x] != PLAYER_HEAD:
+		grid_logic[part_coords.y][part_coords.x] = LogicConstants.EMPTY
+	elif(grid_logic[part_coords_update.y][part_coords_update.x] != LogicConstants.EMPTY
+	and grid_logic[part_coords_update.y][part_coords_update.x] != LogicConstants.FOOD):
+		if grid_logic[part_coords.y][part_coords.x] != LogicConstants.PLAYER_HEAD:
 			part_coords_update = part_coords
 			grid_logic[part_coords.y][part_coords.x] = grid_logic[part_coords.y][part_coords.x]
 			part.is_valid = false
 		else:
 			grid_logic[part_coords_update.y][part_coords_update.x] = grid_logic[part_coords.y][part_coords.x]
-			grid_logic[part_coords.y][part_coords.x] = EMPTY
+			grid_logic[part_coords.y][part_coords.x] = LogicConstants.EMPTY
 			game_over = true
 			game_loss.emit(score)
 	
 	if ate:
-		grid_logic[part_coords.y][part_coords.x] = PLAYER_BODY
+		grid_logic[part_coords.y][part_coords.x] = LogicConstants.PLAYER_BODY
 		snake_eat_spawn(part_coords.x, part_coords.y)
 	#calculate new position
 	var new_pos = Vector2(part.global_position)
-	if(dir == UP):
+	if(dir == DirectionConstants.UP):
 		if(part_coords_update.y != part_coords.y):
-			new_pos.y = new_pos.y - OFFSET
+			new_pos.y = new_pos.y - CheckerboardConstants.OFFSET
 		else:
 			new_pos.y = new_pos.y
 
-	elif(dir == DOWN):
+	elif(dir == DirectionConstants.DOWN):
 		if(part_coords_update.y != part_coords.y):
-			new_pos.y = new_pos.y + OFFSET
+			new_pos.y = new_pos.y + CheckerboardConstants.OFFSET
 		else:
 			new_pos.y = new_pos.y
-	elif(dir == LEFT):
+	elif(dir == DirectionConstants.LEFT):
 		if(part_coords_update.x != part_coords.x):
-			new_pos.x = new_pos.x - OFFSET
+			new_pos.x = new_pos.x - CheckerboardConstants.OFFSET
 		else:
 			new_pos.x = new_pos.x
-	elif (dir == RIGHT):
+	elif (dir == DirectionConstants.RIGHT):
 		if(part_coords_update.x != part_coords.x):
-			new_pos.x = new_pos.x + OFFSET
+			new_pos.x = new_pos.x + CheckerboardConstants.OFFSET
 		else:
 			new_pos.x = new_pos.x
 	
 	var tween = create_tween()
 	tween.tween_property(part,"global_position", new_pos, 1.0)
 	part._set_coords(part_coords_update)
-
-		
 
 	
 func print_grid_to_console() -> void:
@@ -237,15 +209,15 @@ func try_spawn_food() -> void:
 	if not max_food_spawned:
 		var row = randi_range(0, grid_logic.size()-1)
 		var col = randi_range(0, grid_logic[0].size()-1)
-		if(grid_logic[row][col] == EMPTY):
-			grid_logic[row][col] = FOOD
+		if(grid_logic[row][col] == LogicConstants.EMPTY):
+			grid_logic[row][col] = LogicConstants.FOOD
 			spawn_food(row, col)
 			max_food_spawned = true
 			
 func spawn_food(row: int, col: int) -> void:
 	var f = food_scene.instantiate()
-	f.global_position.x = OFFSET * col
-	f.global_position.y = OFFSET * row
+	f.global_position.x = CheckerboardConstants.OFFSET * col
+	f.global_position.y = CheckerboardConstants.OFFSET * row
 	add_child(f)
 	fd = f
 	
@@ -254,17 +226,9 @@ func spawn_food(row: int, col: int) -> void:
 func _on_game_over_select_item_selected(index: int) -> void:
 	if index == 0:
 		restart_game.emit()
-		score = 0
-		grid_logic = []
-		grid_check = []
-		sh = null
-		sb = null
-		fd = null
-		st = null
-		max_food_spawned = false
-		game_over = false
 		_clear_children()
-		grid_init(9,9)
+		_init_board()
+		
 		
 	if index == 1:
 		queue_free()
@@ -274,3 +238,24 @@ func _on_game_over_select_item_selected(index: int) -> void:
 func _clear_children() -> void:
 	for child in get_children():
 		child.queue_free()
+		
+func _init_board() -> void:
+		score = 0
+		grid_logic = []
+		grid_check = []
+		sh = null
+		sb = null
+		fd = null
+		st = null
+		max_food_spawned = false
+		game_over = false
+		tile_toggle = true
+		grid_init(9,9)
+		
+func _init_snake_part(sp : Node, offset_multiplier : int, row_multiplier : int) -> void:
+	sp.global_position.x = CheckerboardConstants.OFFSET * offset_multiplier
+	sp.global_position.y = CheckerboardConstants.OFFSET * row_multiplier
+	sp.emit_direction.connect(_on_emit_direction, ConnectFlags.CONNECT_DEFERRED)
+	sp._set_coords(Vector2i(offset_multiplier, row_multiplier))
+	add_child(sp)
+	

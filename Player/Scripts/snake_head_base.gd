@@ -1,13 +1,10 @@
 extends Node2D
 
-const UP = 1
-const DOWN = 2
-const LEFT = 3
-const RIGHT = 4
+
 
 signal emit_direction(code:int, head:Node2D, coords :Vector2i)
-var curr_direction = UP
-var prev_direction = UP
+var curr_direction = DirectionConstants.UP
+var prev_direction = DirectionConstants.UP
 
 var connected_part = null
 
@@ -24,22 +21,22 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if(Input.is_action_just_pressed("UP")):
-		curr_direction = UP
+		curr_direction = DirectionConstants.UP
 	elif(Input.is_action_just_pressed("DOWN")):
-		curr_direction = DOWN
+		curr_direction = DirectionConstants.DOWN
 	elif(Input.is_action_just_pressed("LEFT")):
-		curr_direction = LEFT
+		curr_direction = DirectionConstants.LEFT
 	elif(Input.is_action_just_pressed("RIGHT")):
-		curr_direction = RIGHT
+		curr_direction = DirectionConstants.RIGHT
 	
 func _on_tick() -> void:
-	if curr_direction == UP:
+	if curr_direction == DirectionConstants.UP:
 		$SnakeHeadTexture.rotation = deg_to_rad(0)
-	elif curr_direction == DOWN:
+	elif curr_direction == DirectionConstants.DOWN:
 		$SnakeHeadTexture.rotation = deg_to_rad(180)
-	elif curr_direction == RIGHT:
+	elif curr_direction == DirectionConstants.RIGHT:
 		$SnakeHeadTexture.rotation = deg_to_rad(90)
-	elif curr_direction == LEFT:
+	elif curr_direction == DirectionConstants.LEFT:
 		$SnakeHeadTexture.rotation = deg_to_rad(270)
 	emit_direction.emit(curr_direction, self, $Coords.coords)
 

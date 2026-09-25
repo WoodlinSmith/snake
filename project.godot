@@ -15,6 +15,12 @@ run/main_scene="uid://cb2ulnaj8c7hg"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+CheckerboardConstants="*uid://cx5w0re1kntyf"
+DirectionConstants="*uid://by8pa60kkmm6c"
+LogicConstants="*uid://417d1uif6deu"
+
 [display]
 
 window/size/mode=3

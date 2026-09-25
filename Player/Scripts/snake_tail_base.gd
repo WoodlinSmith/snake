@@ -1,10 +1,7 @@
 extends Node2D
-const UP = 1
-const DOWN = 2
-const LEFT = 3
-const RIGHT = 4
 
-var curr_direction = UP
+
+var curr_direction = DirectionConstants.UP
 var is_valid = true
 signal emit_direction(code:int, head:Node2D, coords :Vector2i)
 
@@ -18,13 +15,13 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_tick() -> void:
-	if curr_direction == UP:
+	if curr_direction == DirectionConstants.UP:
 		$SnakeTailTexture.rotation = deg_to_rad(0)
-	elif curr_direction == DOWN:
+	elif curr_direction == DirectionConstants.DOWN:
 		$SnakeTailTexture.rotation = deg_to_rad(180)
-	elif curr_direction == RIGHT:
+	elif curr_direction == DirectionConstants.RIGHT:
 		$SnakeTailTexture.rotation = deg_to_rad(90)
-	elif curr_direction == LEFT:
+	elif curr_direction == DirectionConstants.LEFT:
 		$SnakeTailTexture.rotation = deg_to_rad(270)
 	emit_direction.emit(curr_direction, self, $Coords.coords)
 	pass
