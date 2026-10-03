@@ -36,12 +36,28 @@ func grid_init(length: int, width: int) -> void:
 		grid_check.append([])
 		grid_logic.append([])
 		for j in width:
-			if tile_toggle:
-				grid_check[i].append(CheckerboardConstants.WHITE_CHECK)
+			if i == 0:
+				if j == 0:
+					grid_check[i].append(CheckerboardConstants.TOP_LEFT)
+				elif j > 0 and j < width - 1:
+					grid_check[i].append(CheckerboardConstants.TOP)
+				else:
+					grid_check[i].append(CheckerboardConstants.TOP_RIGHT)
+			elif i > 0 and i < length - 1:
+				if j == 0:
+					grid_check[i].append(CheckerboardConstants.LEFT)
+				elif j > 0 and j < width - 1:
+					grid_check[i].append(CheckerboardConstants.MIDDLE)
+				else:
+					grid_check[i].append(CheckerboardConstants.RIGHT)
 			else:
-				grid_check[i].append(CheckerboardConstants.BLACK_CHECK)
+				if j == 0:
+					grid_check[i].append(CheckerboardConstants.BOTTOM_LEFT)
+				elif j > 0 and j < width - 1:
+					grid_check[i].append(CheckerboardConstants.BOTTOM)
+				else:
+					grid_check[i].append(CheckerboardConstants.BOTTOM_RIGHT)
 			grid_logic[i].append(LogicConstants.EMPTY)
-			tile_toggle = not tile_toggle
 	create_grid_board()
 	set_player_location(length - 3, width - 3)
 	create_snake_body()
@@ -49,10 +65,7 @@ func grid_init(length: int, width: int) -> void:
 func create_grid_board() -> void:
 	for i in grid_check.size():
 		for j in grid_check[i].size():
-			if grid_check[i][j] == CheckerboardConstants.WHITE_CHECK:
-				spawn_tile(CheckerboardConstants.WHITE_CHECK, j, i)	
-			else:
-				spawn_tile(CheckerboardConstants.BLACK_CHECK, j, i)
+			spawn_tile(grid_check[i][j], j, i)
 				
 func set_player_location(y: int, x: int) -> void:
 	grid_logic[y][x] = LogicConstants.PLAYER_HEAD

@@ -13,7 +13,25 @@ func _process(delta: float) -> void:
 	
 
 func set_base(texture_code: int) -> void:
-	if(texture_code == 0):
-		base.texture = load("res://Level/Textures/white_tile_64.png")
-	else:
-		base.texture = load("res://Level/Textures/black_tile_64.png")
+	
+	match texture_code:
+		0:
+			base.texture = load("res://Level/Textures/dirt_tile_64.png")
+		1:
+			base.texture = load("res://Level/Textures/top_tile_64.png")
+		2:
+			base.texture = load('res://Level/Textures/bottom_tile_64.png')
+		3:
+			base.texture = load('res://Level/Textures/left_edge_tile_64.png')
+		4:
+			base.texture = load('res://Level/Textures/right_edge_tile_64.png')
+		5: 
+			base.texture = load('res://Level/Textures/top_left_tile_64.png')
+		6:
+			base.texture = load('res://Level/Textures/top_right_tile_64.png')
+		7:
+			base.texture = load('res://Level/Textures/bottom_left_tile_64.png')
+		8:
+			base.texture = load('res://Level/Textures/bottom_right_tile_64.png')
+		_:
+			base.texture = load("res://Level/Textures/black_tile_64.png")

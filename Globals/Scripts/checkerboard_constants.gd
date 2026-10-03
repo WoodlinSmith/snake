@@ -1,6 +1,16 @@
 extends Node
-const WHITE_CHECK = 0
-const BLACK_CHECK = 1
+
+
+
+const MIDDLE = 0
+const TOP = 1
+const BOTTOM = 2
+const LEFT = 3
+const RIGHT = 4
+const TOP_LEFT = 5
+const TOP_RIGHT = 6
+const BOTTOM_LEFT = 7
+const BOTTOM_RIGHT = 8
 
 const OFFSET = 64
 
